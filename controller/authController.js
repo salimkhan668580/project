@@ -3,6 +3,7 @@ const asyncWrapper=require("../Middlerware/wrapAsync.js");
 const genToken = require("../lib/generateToken.js");
 const bcrypt = require("bcryptjs");
 
+
 const signup=asyncWrapper(async(req,res)=>{
         const {
             city,
@@ -20,13 +21,6 @@ const signup=asyncWrapper(async(req,res)=>{
             message:"EssentailDetails is missing"
           })
         }
-        // if (role== "teacher") {
-        //   User.essentialDetails = {
-        //     subject: essentialDetails.subject,
-        //     experience: essentialDetails.experience,
-        //     category: essentialDetails.category
-        //   };
-        // }
           const newUser= new User({
           city,
           role,
@@ -76,7 +70,30 @@ const login=asyncWrapper(async(req,res)=>{
             token:token
         })
 })
+
+
+const forget=asyncWrapper(async(req,res)=>{
+        const {
+            email,
+            password
+        } = req.body;
+ const user=await User.findOne({email});
+  if(!user){
+    res.status(404).json({
+        status:false,
+        message:"User not found"
+    })
+  }
+    user.password=password;
+    await user.save() 
+        res.status(200).json({
+            status:true,
+            message:"Password has been changed",
+        })
+})
+
 module.exports={
     signup:signup,
-    login:login
+    login:login,
+    forget:forget
 }
