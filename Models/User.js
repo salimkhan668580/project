@@ -7,6 +7,12 @@ const Userschema=new mongoose.Schema({
         type:String,
         required:true
     },
+    otp:{
+        type:Number,
+    },
+    expireAt:{
+        type:Date
+    },
     role:{
         type:String,
         enum:["teacher","school","student"]

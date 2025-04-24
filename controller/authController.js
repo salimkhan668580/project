@@ -2,20 +2,24 @@ const User = require("../Models/User");
 const asyncWrapper=require("../Middlerware/wrapAsync.js");
 const genToken = require("../lib/generateToken.js");
 const bcrypt = require("bcryptjs");
+const { signupValidator } = require("../schemaValidator/Validate.js");
+
 
 
 const signup=asyncWrapper(async(req,res)=>{
+        const validatedData = signupValidator.parse(req.body)
         const {
-            city,
-            role,
-            fullName,
-            email,
-            mobile,
-            gender,
-            DOB,
-            password,
-            essentialDetails
-        }=req.body;
+          city,
+          role,
+          fullName,
+          email,
+          mobile,
+          gender,
+          DOB,
+          password,
+          essentialDetails
+      }=validatedData;
+
         if(role=="teacher"&&!essentialDetails){
           res.status(404).json({
             message:"EssentailDetails is missing"
@@ -61,7 +65,6 @@ const login=asyncWrapper(async(req,res)=>{
     _id:user._id,
     fullName:user._id,
     email:user.email,
-    gender:user.gender,
   }
     const token=await genToken(data)
         res.status(200).json({
@@ -70,7 +73,6 @@ const login=asyncWrapper(async(req,res)=>{
             token:token
         })
 })
-
 
 const forget=asyncWrapper(async(req,res)=>{
         const {
@@ -91,6 +93,7 @@ const forget=asyncWrapper(async(req,res)=>{
             message:"Password has been changed",
         })
 })
+
 
 module.exports={
     signup:signup,
